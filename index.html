@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Kegiatan Panti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #fff8f0;
+    --bg-panel: #ffffff;
+    --pink: #ffc2d1;
+    --pink-deep: #f97aa0;
+    --mint: #a8ecdd;
+    --mint-deep: #33ab93;
+    --yellow: #ffe18a;
+    --yellow-deep: #e8a93a;
+    --blue: #b7e0f6;
+    --blue-deep: #4a9fc7;
+    --purple: #ddc9f6;
+    --purple-deep: #9377cf;
+    --text-primary: #3d3540;
+    --text-muted: #8c8291;
+    --text-faint: #b8aebb;
+    --border: rgba(61,53,64,0.08);
+    --border-strong: rgba(61,53,64,0.14);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+
+  /* ambient pastel blobs instead of a techy grid */
+  .blob{
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.55;
+    z-index: 0;
+    pointer-events: none;
+    animation: float 9s ease-in-out infinite;
+  }
+  .blob-1{ width: 380px; height: 380px; background: var(--mint); top: -120px; left: -100px; }
+  .blob-2{ width: 320px; height: 320px; background: var(--pink); top: 60px; right: -120px; animation-delay: -3s; }
+  .blob-3{ width: 260px; height: 260px; background: var(--yellow); top: 420px; left: 40%; animation-delay: -6s; }
+
+  @keyframes float{
+    0%, 100%{ transform: translateY(0px); }
+    50%{ transform: translateY(22px); }
+  }
+
+  a{ color: inherit; }
+
+  .wrap{
+    position: relative;
+    z-index: 1;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* header */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    padding: 28px 0 0;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size: 17px;
+  }
+  .brand-mark{
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: conic-gradient(from 90deg, var(--pink), var(--yellow), var(--mint), var(--blue), var(--purple), var(--pink));
+    flex-shrink:0;
+  }
+  .status-pill{
+    display:flex; align-items:center; gap:7px;
+    font-family:'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 12.5px;
+    color: var(--mint-deep);
+    border: 1px solid var(--mint);
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: #f0fbf8;
+  }
+  .dot-live{
+    width:7px; height:7px; border-radius:50%;
+    background: var(--mint-deep);
+    box-shadow: 0 0 0 0 rgba(51,171,147,0.55);
+    animation: pulse 2.2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow: 0 0 0 0 rgba(51,171,147,0.5); }
+    70%{ box-shadow: 0 0 0 7px rgba(51,171,147,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(51,171,147,0); }
+  }
+
+  /* hero */
+  .hero{
+    padding: 25px 0 10px;
+    text-align: left;
+  }
+  .eyebrow{
+    display:inline-block;
+    font-family:'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--pink-deep);
+    background: #fff0f4;
+    border: 1px solid var(--pink);
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin: 0 0 20px;
+  }
+  h1{
+    font-family:'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+    max-width: 680px;
+  }
+  .subtitle{
+    color: var(--text-muted);
+    font-size: 16.5px;
+    max-width: 520px;
+    margin: 0 0 30px;
+  }
+  .hero-actions{
+    display:flex; gap:14px; flex-wrap: wrap;
+  }
+  .btn{
+    font-family:'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 13px 22px;
+    border-radius: 999px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-decoration: none;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-primary{
+    background: linear-gradient(135deg, var(--pink-deep), #ff9bb8);
+    color: #fff;
+    box-shadow: 0 10px 24px -10px rgba(249,122,160,0.6);
+  }
+  .btn-primary:hover{ transform: translateY(-2px); }
+  .btn-ghost{
+    background: #fff;
+    color: var(--mint-deep);
+    border-color: var(--mint);
+  }
+  .btn-ghost:hover{ border-color: var(--mint-deep); box-shadow: 0 6px 18px -10px rgba(51,171,147,0.5); }
+
+  /* panel */
+  .console{
+    margin: 8px 0 60px;
+    border-radius: 26px;
+    border: 2px solid var(--border);
+    background: var(--bg-panel);
+    overflow: hidden;
+    box-shadow: 0 30px 60px -32px rgba(61,53,64,0.28);
+  }
+  .console-bar{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: #fffdfa;
+    border-bottom: 1px solid var(--border);
+  }
+  .console-bar-left{ display:flex; align-items:center; gap:12px; }
+  .tile-dots{ display:flex; gap:6px; }
+  .tile-dots span{
+    width:11px; height:11px; border-radius:4px;
+  }
+  .tile-dots span:nth-child(1){ background: var(--pink); }
+  .tile-dots span:nth-child(2){ background: var(--yellow); }
+  .tile-dots span:nth-child(3){ background: var(--mint); }
+  .console-label{
+    font-family:'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+  .console-timestamp{
+    font-family:'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+  .console-body{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #fdfaf5;
+  }
+  .console-body iframe{
+    width:100%; height:100%;
+    border:0; display:block;
+  }
+
+  /* empty state */
+  .empty-state{
+    position:absolute; inset:0;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 40px 24px;
+    gap: 14px;
+  }
+  .empty-icon{
+    width:52px; height:52px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--pink), var(--yellow));
+    display:flex; align-items:center; justify-content:center;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .empty-state h3{
+    font-family:'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    margin: 0;
+  }
+  .empty-state p{
+    color: var(--text-muted);
+    font-size: 14px;
+    max-width: 420px;
+    margin: 0;
+  }
+  .empty-state code{
+    font-family:'Inter', sans-serif;
+    font-size: 12.5px;
+    background: #fff0f4;
+    border: 1px solid var(--pink);
+    padding: 2px 8px;
+    border-radius: 6px;
+    color: var(--pink-deep);
+  }
+
+  /* info grid */
+  .info-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 70px;
+  }
+  .info-card{
+    border-radius: 20px;
+    padding: 22px;
+    border: 1px solid var(--border);
+  }
+  .info-card.c-mint{ background: #f0fbf8; }
+  .info-card.c-pink{ background: #fff0f4; }
+  .info-card.c-yellow{ background: #fffaf0; }
+
+  .info-card .badge{
+    width: 28px; height: 28px;
+    border-radius: 9px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+  .c-mint .badge{ background: var(--mint-deep); }
+  .c-pink .badge{ background: var(--pink-deep); }
+  .c-yellow .badge{ background: var(--yellow-deep); }
+
+  .info-card h4{
+    font-family:'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0 0 8px;
+  }
+  .info-card p{
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 26px 0 40px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-faint);
+  }
+  footer a{ color: var(--text-muted); text-decoration: underline; text-underline-offset: 3px; }
+
+  @media (max-width: 760px){
+    .info-grid{ grid-template-columns: 1fr; }
+    header{ flex-wrap: wrap; gap: 12px; }
+    .hero{ padding: 52px 0 36px; }
+    .console-body{ aspect-ratio: 4 / 5; }
+    .blob{ display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .dot-live, .blob{ animation: none; }
+    html{ scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <span id="brandName">Panti Ceria</span>
+    </div>
+    <div class="status-pill">
+      <span class="dot-live"></span>
+      <span id="statusLabel">Terhubung ke sumber data</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1 id="heroTitle">Setiap Senyum, Tercatat di Sini</h1>
+    <p class="subtitle" id="heroSubtitle">
+      Pantau perkembangan donasi dan kegiatan untuk adik-adik panti asuhan, langsung dari laporan Looker Studio kamu.
+    </p>
+    <p class="eyebrow" id="eyebrow">Laporan Kegiatan &middot; Untuk Adik-adik Panti</p>
+    <!-- <div class="hero-actions">
+      <a href="#panel" class="btn btn-primary">Lihat dashboard ↓</a>
+      <!-- <a href="https://support.google.com/looker-studio/answer/7020039" target="_blank" rel="noopener" class="btn btn-ghost">Cara ambil link embed</a> -->
+    <!-- </div> -->
+  </section>
+
+  <section class="console" id="panel">
+    <div class="console-bar">
+      <div class="console-bar-left">
+        <div class="tile-dots"><span></span><span></span><span></span></div>
+        <span class="console-label">Laporan Live</span>
+      </div>
+      <span class="console-timestamp" id="timestamp"></span>
+    </div>
+    <div class="console-body" id="consoleBody">
+      <!-- Iframe atau empty-state akan dirender lewat JS di bawah -->
+    </div>
+  </section>
+
+  <!-- <section class="info-grid">
+    <div class="info-card c-mint">
+      <div class="badge">1</div>
+      <h4>Data selalu baru</h4>
+      <p>Begitu laporan sumbernya diperbarui, angka dan grafik di sini ikut berubah otomatis.</p>
+    </div>
+    <div class="info-card c-pink">
+      <div class="badge">2</div>
+      <h4>Mudah dibagikan</h4>
+      <p>Cukup satu tautan, siapa pun bisa melihat perkembangan kegiatan tanpa perlu login.</p>
+    </div>
+    <div class="info-card c-yellow">
+      <div class="badge">3</div>
+      <h4>Gampang disesuaikan</h4>
+      <p>Ganti nama, judul, dan tautan embed lewat satu bagian pengaturan di file ini.</p>
+    </div>
+  </section> -->
+
+  <footer>
+    <span id="footerNote">Dibuat dengan hangat untuk adik-adik panti.</span>
+    <span>Dibuat dengan Claude</span>
+  </footer>
+</div>
+
+<script>
+  /* ============================================================
+     KONFIGURASI — edit bagian ini sesuai kebutuhan kamu.
+     Tidak perlu menyentuh CSS atau bagian lain di bawah.
+     ============================================================ */
+  const CONFIG = {
+    brandName: "One Fun Day - Visit Panti Sayap Ibu",
+    eyebrow: "Laporan Keuangan",
+    heroTitle: "Setiap Senyum, Tercatat di Sini",
+    heroSubtitle: "Pantau perkembangan donasi dan kegiatan untuk adik-adik panti asuhan, langsung dari sini. ~NonaBerkuda X Deenhood Sisters~",
+    // Tempel URL EMBED Looker Studio / Google Data Studio kamu di sini.
+    // Cara ambil: buka laporan → File → Embed report → salin URL di dalam tag iframe.
+    // Contoh format: "https://lookerstudio.google.com/embed/reporting/xxxxxxxx/page/xxxxx"
+    embedUrl: "https://datastudio.google.com/embed/reporting/c81ed575-f5b6-4573-91be-0e1a45698b4f/page/c7M3F",
+    footerNote: "Created with warmly heart by NonaBerkuda & Deenhood Sisters"
+  };
+  /* ============================================================ */
+
+  document.getElementById('brandName').textContent = CONFIG.brandName;
+  document.getElementById('eyebrow').textContent = CONFIG.eyebrow;
+  document.getElementById('heroTitle').textContent = CONFIG.heroTitle;
+  document.getElementById('heroSubtitle').textContent = CONFIG.heroSubtitle;
+  document.getElementById('footerNote').textContent = CONFIG.footerNote;
+  document.title = CONFIG.brandName;
+
+  const consoleBody = document.getElementById('consoleBody');
+  const statusLabel = document.getElementById('statusLabel');
+
+  if (CONFIG.embedUrl && CONFIG.embedUrl.trim() !== "") {
+    const iframe = document.createElement('iframe');
+    iframe.src = CONFIG.embedUrl;
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.setAttribute('loading', 'lazy');
+    consoleBody.appendChild(iframe);
+    statusLabel.textContent = "Terhubung ke sumber data";
+  } else {
+    statusLabel.textContent = "Menunggu tautan embed";
+    consoleBody.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 21s-7-4.35-9.5-8.8C.8 8.7 2.2 5 6 5c2 0 3.3 1.1 4 2.2C10.7 6.1 12 5 14 5c3.8 0 5.2 3.7 3.5 7.2C15 16.65 12 21 12 21z"/>
+          </svg>
+        </div>
+        <h3>Belum ada laporan yang terhubung</h3>
+        <p>Buka laporan Looker Studio kamu → <b>File</b> → <b>Embed report</b> → salin URL-nya, lalu tempel ke variabel <code>embedUrl</code> di bagian CONFIG pada file ini.</p>
+      </div>
+    `;
+  }
+
+  function updateTimestamp(){
+    const now = new Date();
+    const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('timestamp').textContent = time + " WIB";
+  }
+  updateTimestamp();
+  setInterval(updateTimestamp, 30000);
+</script>
+
+</body>
+</html>
