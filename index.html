@@ -86,10 +86,10 @@
     font-size: 17px;
   }
   .brand-mark{
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink:0;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: conic-gradient(from 90deg, var(--pink), var(--yellow), var(--mint), var(--blue), var(--purple), var(--pink));
+    flex-shrink:0;
   }
   .status-pill{
     display:flex; align-items:center; gap:7px;
@@ -344,7 +344,7 @@
 <div class="wrap">
   <header>
     <div class="brand">
-      <img src="logo.png" alt="One Fun Day" class="brand-mark">
+      <span class="brand-mark"></span>
       <span id="brandName">Panti Ceria</span>
     </div>
     <div class="status-pill">
